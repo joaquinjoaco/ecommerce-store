@@ -12,7 +12,7 @@ import './globals.css'
 const font = Urbanist({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'SportPolis | Tienda',
+  title: 'SportPolis - Tienda de deportes',
   description: 'Tienda de deportes Avenida Italia 4748 | Representante oficial Java Uruguay | ⏰Lunes a Viernes de 11 a 19 Sabado de 9 a 13. ',
 }
 

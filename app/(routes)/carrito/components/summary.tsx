@@ -22,10 +22,12 @@ const Summary = () => {
         }
 
         if (searchParams.get("canceled")) {
-            toast.error("Something went wrong.");
+            toast.error("Ocurrió un error inesperado.");
         }
 
-    }, [searchParams, removeAll])
+    }, [searchParams, removeAll]);
+
+
     const totalPrice = items.reduce((total, item) => {
         return total + Number(item.price)
     }, 0); // default value 0.

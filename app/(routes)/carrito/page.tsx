@@ -13,9 +13,11 @@ const CartPage = () => {
     const [isMounted, setIsMounted] = useState(false);
     const cart = useCart();
 
+    // hydration trick.
     useEffect(() => {
         setIsMounted(true);
     }, []);
+
     if (!isMounted) {
         return null;
     }

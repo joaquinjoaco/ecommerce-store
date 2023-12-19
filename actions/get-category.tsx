@@ -1,4 +1,4 @@
-// Get a single product.
+// Get a single category.
 
 import { Category } from "@/types";
 

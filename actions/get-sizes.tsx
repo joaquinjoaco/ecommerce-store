@@ -1,4 +1,4 @@
-// Get all categories.
+// Get all sizes.
 import { Size } from "@/types";
 
 const URL = `${process.env.NEXT_PUBLIC_API_URL}/talles`;
