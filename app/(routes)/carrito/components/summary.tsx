@@ -1,8 +1,7 @@
 "use client";
 
-import axios from "axios";
 import { useEffect } from "react";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 
 import Button from "@/components/ui/button";
@@ -11,6 +10,7 @@ import useCart from "@/hooks/use-cart";
 
 const Summary = () => {
 
+    const router = useRouter();
     const searchParams = useSearchParams();
     const items = useCart((state) => state.items);
     const removeAll = useCart((state) => state.removeAll);
@@ -27,19 +27,17 @@ const Summary = () => {
 
     }, [searchParams, removeAll]);
 
-
     const totalPrice = items.reduce((total, item) => {
         return total + Number(item.price)
     }, 0); // default value 0.
 
+    // const onCheckout = async () => {
+    //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+    //         productIds: items.map((item) => item.id),
+    //     });
 
-    const onCheckout = async () => {
-        const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
-            productIds: items.map((item) => item.id),
-        });
-
-        window.location = response.data.url;
-    }
+    //     window.location = response.data.url;
+    // }
 
     return (
         <div className="mt-16 rounded-lg bg-gray-50 px-4 py-6 sm:p-6 lg:col-span-5 lg:mt-0 lg:p-8">
@@ -54,8 +52,8 @@ const Summary = () => {
                     <Currency value={totalPrice} />
                 </div>
             </div>
-            <Button disabled={items.length === 0} onClick={onCheckout} className="w-full mt-6">
-                Comprar
+            <Button disabled={items.length === 0} onClick={() => router.push("/checkout")} className="w-full mt-6">
+                Pagar
             </Button>
         </div>
     )
