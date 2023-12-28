@@ -1,12 +1,12 @@
 import Container from "@/components/ui/container";
-// import { CheckoutForm } from "./components/checkout-form";
+import CheckoutForm from "./components/checkout-form";
 
 const CheckoutPage = () => {
     return (
         <div className="bg-white">
-            {/* <Container> */}
-            {/* <CheckoutForm /> */}
-            {/* </Container> */}
+            <Container>
+                <CheckoutForm />
+            </Container>
         </div>
     );
 }
