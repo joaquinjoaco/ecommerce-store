@@ -8,10 +8,10 @@ const Footer = () => {
                     &copy; 2023 SportPolis. Todos los derechos reservados.
                 </p>
                 <a href="https://www.instagram.com/sport.polis/?hl=es" target="_blank">
-                    <Instagram color="gray" />
+                    <Instagram size={20} color="gray" />
                 </a>
                 <a href="https://www.facebook.com/Sport.Polis/" target="_blank">
-                    <Facebook color="darkgray" />
+                    <Facebook size={20} color="gray" />
                 </a>
 
             </div>
