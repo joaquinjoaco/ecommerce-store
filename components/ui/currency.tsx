@@ -9,10 +9,12 @@ const formatter = new Intl.NumberFormat("en-US", {
 
 interface CurrencyProps {
     value?: string | number;
+    className?: string;
 }
 
 const Currency: React.FC<CurrencyProps> = ({
-    value
+    value,
+    className
 }) => {
 
     const [isMounted, setIsMounted] = useState(false); // good old hydration trick.
@@ -24,7 +26,7 @@ const Currency: React.FC<CurrencyProps> = ({
         return null;
     }
     return (
-        <div className="font-semibold">
+        <div className={className}>
             {formatter.format(Number(value))}
         </div>
     );

@@ -49,11 +49,13 @@ const Summary = () => {
                     <div className="text-base font-medium text-gray-900">
                         Total de la orden
                     </div>
-                    <Currency value={totalPrice} />
+                    <div className="font-bold">
+                        <Currency value={totalPrice} />
+                    </div>
                 </div>
             </div>
             <Button disabled={items.length === 0} onClick={() => router.push("/checkout")} className="w-full mt-6">
-                Pagar
+                Finalizar compra
             </Button>
         </div>
     )
