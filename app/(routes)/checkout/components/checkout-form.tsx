@@ -11,7 +11,7 @@ import Currency from "@/components/ui/currency";
 import CheckoutItem from "./checkout-item";
 import Delivery from "./checkout-delivery";
 import Button from "@/components/ui/button";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import Required from "./checkout-required";
 
 const CheckoutForm = () => {
@@ -35,7 +35,6 @@ const CheckoutForm = () => {
         address2: z.string().max(64, { message: "No puede contener más de 64 caracteres" }).optional(),
         city: z.string().min(1, { message: 'Este campo es obligatorio' }).max(32, { message: "No puede contener más de 32 caracteres" }),
         postalcode: z.string().min(1, { message: 'Este campo es obligatorio' }).max(32, { message: "No puede contener más de 32 caracteres" }),
-        departamento: z.string().min(1, { message: 'Este campo es obligatorio' }).max(32, { message: "No puede contener más de 32 caracteres" }),
         phone: z.string().min(1, { message: 'Este campo es obligatorio' }).max(32, { message: "No puede contener más de 32 caracteres" }),
         email: z.string().min(1, { message: 'Este campo es obligatorio' }).email("El email no es válido"),
         notes: z.string().max(256, { message: "No puede contener más de 64 caracteres" }).optional(),
@@ -97,7 +96,7 @@ const CheckoutForm = () => {
                 message: "Este campo es obligatorio",
             })
             .optional(),
-        pickupCedula: z.string().max(8, { message: 'La cédula no puede tener más de 8 dígitos' })
+        pickupCedula: z.string().max(8, { message: "La cédula no puede tener más de 8 dígitos" })
             // required when deliveryMethod.id === 1
             .refine(data => deliveryMethod.id === 1 || (data && data.trim().length > 0), {
                 message: "Este campo es obligatorio",
@@ -124,12 +123,43 @@ const CheckoutForm = () => {
             cedula: '',
             address1: '',
             address2: '',
+            city: '',
+            phone: '',
+            email: '',
+            notes: '',
+            deliveryAddress1: '',
+            deliveryAddress2: '',
+            deliveryCedula: '',
+            deliveryCity: '',
+            deliveryLastname: '',
+            deliveryName: '',
+            deliveryPhone: '',
+            deliveryPostalcode: '',
+            pickupCedula: '',
+            pickupFullName: '',
+            postalcode: '',
+            TandC: false,
         }
     });
 
-    const onSubmit = () => {
-        console.log("hi from onSubmit!");
-    }
+    // Loading flag.
+    const [loading, setIsLoading] = useState(false);
+
+    // Terms and conditions boolean.
+    const [TC, setTC] = useState(false);
+
+    // NextJS Router.
+    const router = useRouter();
+
+    // Cart Items.
+    const items = useCart((state) => state.items);
+    // Subtotal price.
+    const subTotalPrice = items.reduce((total, item) => {
+        return total + Number(item.price)
+    }, 0); // initial value 0.
+    // Total price.
+    const totalPrice = subTotalPrice + deliveryMethod.cost;
+
 
     // Departamentos
     const departamentos = [
@@ -154,25 +184,48 @@ const CheckoutForm = () => {
         "Treinta y Tres",
     ];
     const [selectedDep, setSelectedDep] = useState(departamentos[0]);
+    const [selectedDeliveryDep, setSelectedDeliveryDep] = useState(departamentos[0]);
 
-    // Loading flag.
-    const [loading, setIsLoading] = useState(false);
 
-    // Terms and conditions boolean.
-    const [TC, setTC] = useState(false);
+    // On submit function
+    const onSubmit = async (data: CheckoutFormValues) => {
+        try {
+            // REMEMBER TO ADD selectedDep and selectedDeliveryDep to the Order POST if differentAddress was true.
+            // AND add pickupCedula and pickupFullname only if deliveryMethod === 0 (pickup).
+            const order = {
+                ...data,
 
-    // NextJS Router.
-    const router = useRouter();
+                departamento: selectedDep,
 
-    // Cart Items.
-    const items = useCart((state) => state.items);
-    // Subtotal price.
-    const subTotalPrice = items.reduce((total, item) => {
-        return total + Number(item.price)
-    }, 0); // initial value 0.
-    // Total price.
-    const totalPrice = subTotalPrice + deliveryMethod.cost;
+                deliveryAddress1: differentAddress ? data.deliveryAddress1 : "",
+                deliveryAddress2: differentAddress ? data.deliveryAddress2 : "",
+                deliveryCedula: differentAddress ? data.deliveryCedula : "",
+                deliveryCity: differentAddress ? data.deliveryCity : "",
+                deliveryLastname: differentAddress ? data.deliveryLastname : "",
+                deliveryName: differentAddress ? data.deliveryName : "",
+                deliveryPhone: differentAddress ? data.deliveryPhone : "",
+                deliveryPostalcode: differentAddress ? data.deliveryPostalcode : "",
+                deliveryMethod: deliveryMethod.id, // 0: pickup, 1: delivery
+                deliveryMethodName: deliveryMethod.name,
+                deliveryMethodShopAddress: deliveryMethod.shopAddress,
+                deliveryMethodCost: deliveryMethod.cost,
 
+                deliveryDepartamento: deliveryMethod.id === 1 ? differentAddress ? selectedDeliveryDep : selectedDep : "",
+                pickupCedula: deliveryMethod.id === 0 ? data.pickupCedula : "",
+                pickupFullName: deliveryMethod.id === 0 ? data.pickupFullName : "",
+            }
+
+            console.log(order);
+            //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+            //         productIds: items.map((item) => item.id),
+            //     });
+
+            //     window.location = response.data.url;
+            // reset();
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     useEffect(() => {
         // This route cannot be accessed with an empty cart.
@@ -500,7 +553,7 @@ const CheckoutForm = () => {
                             {/* Departamento de envío */}
                             <div className="flex flex-1 flex-col">
                                 <label className="pb-1 text-sm">Departamento <Required /></label>
-                                <SelectBox values={departamentos} selectedValue={selectedDep} setSelectedValue={setSelectedDep} />
+                                <SelectBox values={departamentos} selectedValue={selectedDeliveryDep} setSelectedValue={setSelectedDeliveryDep} />
                             </div>
 
                             {/* Teléfono de envío */}
