@@ -4,14 +4,15 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import * as z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
-import SelectBox from "@/components/ui/listbox";
 import useCart from "@/hooks/use-cart";
+import SelectBox from "@/components/ui/listbox";
+import Button from "@/components/ui/button";
 import Currency from "@/components/ui/currency";
 import CheckoutItem from "./checkout-item";
 import Delivery from "./checkout-delivery";
-import Button from "@/components/ui/button";
-import { SubmitHandler, useForm } from "react-hook-form";
 import Required from "./checkout-required";
 
 const CheckoutForm = () => {
@@ -192,6 +193,7 @@ const CheckoutForm = () => {
         try {
             // REMEMBER TO ADD selectedDep and selectedDeliveryDep to the Order POST if differentAddress was true.
             // AND add pickupCedula and pickupFullname only if deliveryMethod === 0 (pickup).
+            setIsLoading(true);
             const order = {
                 ...data,
 
@@ -205,25 +207,31 @@ const CheckoutForm = () => {
                 deliveryName: differentAddress ? data.deliveryName : "",
                 deliveryPhone: differentAddress ? data.deliveryPhone : "",
                 deliveryPostalcode: differentAddress ? data.deliveryPostalcode : "",
+                deliveryDepartamento: deliveryMethod.id === 1 ? differentAddress ? selectedDeliveryDep : selectedDep : "",
+
                 deliveryMethod: deliveryMethod.id, // 0: pickup, 1: delivery
                 deliveryMethodName: deliveryMethod.name,
                 deliveryMethodShopAddress: deliveryMethod.shopAddress,
                 deliveryMethodCost: deliveryMethod.cost,
 
-                deliveryDepartamento: deliveryMethod.id === 1 ? differentAddress ? selectedDeliveryDep : selectedDep : "",
                 pickupCedula: deliveryMethod.id === 0 ? data.pickupCedula : "",
                 pickupFullName: deliveryMethod.id === 0 ? data.pickupFullName : "",
+                productIds: items.map((item) => item.id),
             }
 
-            console.log(order);
-            //     const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
-            //         productIds: items.map((item) => item.id),
-            //     });
+            console.log("Orden: ", order);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+                productIds: items.map((item) => item.id),
+                orderData: order
+            });
 
-            //     window.location = response.data.url;
+            console.log(response.data.url);
+            window.location = response.data.url;
             // reset();
+            setIsLoading(false);
         } catch (error) {
             console.log(error);
+            setIsLoading(false);
         }
     }
 
