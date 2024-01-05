@@ -31,7 +31,7 @@ const CheckoutForm = () => {
     const formSchema = z.object({
         firstName: z.string().min(1, { message: 'Este campo es obligatorio' }).max(64, { message: "No puede contener más de 64 caracteres" }),
         lastName: z.string().min(1, { message: 'Este campo es obligatorio' }).max(64, { message: "No puede contener más de 64 caracteres" }),
-        cedula: z.string().min(1, { message: 'Este campo es obligatorio' }).max(8, { message: 'La cédula no puede tener más de 8 dígitos' }),
+        cedula: z.string().min(8, { message: 'La cédula debe tener un mínimo de 8 dígitos' }).max(8, { message: 'La cédula no puede tener más de 8 dígitos' }),
         address1: z.string().min(1, { message: 'Este campo es obligatorio' }).max(64, { message: "No puede contener más de 64 caracteres" }),
         address2: z.string().max(64, { message: "No puede contener más de 64 caracteres" }).optional(),
         city: z.string().min(1, { message: 'Este campo es obligatorio' }).max(32, { message: "No puede contener más de 32 caracteres" }),
@@ -66,10 +66,7 @@ const CheckoutForm = () => {
             })
             .optional(),
         deliveryAddress2: z.string().max(64, { message: "No puede contener más de 64 caracteres" })
-            // required when differentAddress === true
-            .refine(data => !differentAddress || (data && data.trim().length > 0), {
-                message: "Este campo es obligatorio",
-            })
+            // always optional
             .optional(),
         deliveryCity: z.string().max(32, { message: "No puede contener más de 32 caracteres" })
             // required when differentAddress === true
@@ -198,7 +195,7 @@ const CheckoutForm = () => {
                 ...data,
 
                 departamento: selectedDep,
-
+                differentAddress: differentAddress,
                 deliveryAddress1: differentAddress ? data.deliveryAddress1 : "",
                 deliveryAddress2: differentAddress ? data.deliveryAddress2 : "",
                 deliveryCedula: differentAddress ? data.deliveryCedula : "",
@@ -217,16 +214,17 @@ const CheckoutForm = () => {
                 pickupCedula: deliveryMethod.id === 0 ? data.pickupCedula : "",
                 pickupFullName: deliveryMethod.id === 0 ? data.pickupFullName : "",
                 productIds: items.map((item) => item.id),
+                totalPrice: totalPrice,
             }
 
-            console.log("Orden: ", order);
+            // console.log("Orden: ", order);
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
                 productIds: items.map((item) => item.id),
                 orderData: order
             });
 
-            console.log(response.data.url);
-            window.location = response.data.url;
+            // console.log(response.data.url);
+            // window.location = response.data.url;
             // reset();
             setIsLoading(false);
         } catch (error) {
