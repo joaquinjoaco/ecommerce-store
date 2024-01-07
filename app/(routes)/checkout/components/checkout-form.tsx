@@ -215,6 +215,7 @@ const CheckoutForm = () => {
                 pickupFullName: deliveryMethod.id === 0 ? data.pickupFullName : "",
                 productIds: items.map((item) => item.id),
                 totalPrice: totalPrice,
+                TandC: TC,
             }
 
             // console.log("Orden: ", order);
