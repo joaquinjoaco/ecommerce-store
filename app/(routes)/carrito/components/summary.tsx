@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
+import axios from "axios";
 
 import Button from "@/components/ui/button";
 import Currency from "@/components/ui/currency";
@@ -15,14 +16,30 @@ const Summary = () => {
     const items = useCart((state) => state.items);
     const removeAll = useCart((state) => state.removeAll);
 
+    // Called by useEffect after successful payment
+    const orderSucess = async (orderId: string | null) => {
+        if (orderId) {
+            try {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout/${orderId}`);
+            } catch (error: any) {
+                toast.error("Ocurrió un error inesperado en la validación posterior al pago.");
+            }
+        }
+    }
+
     useEffect(() => {
         if (searchParams.get("success")) {
             toast.success("Pago completado.");
+            orderSucess(searchParams.get("order_id"));
             removeAll();
         }
 
-        if (searchParams.get("canceled")) {
+        if (searchParams.get("failure")) {
             toast.error("Ocurrió un error inesperado.");
+        }
+
+        if (searchParams.get("pending")) {
+            toast.error("El pago se encuentra pendiente.");
         }
 
     }, [searchParams, removeAll]);

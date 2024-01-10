@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { initMercadoPago, Wallet } from "@mercadopago/sdk-react";
 
 import useCart from "@/hooks/use-cart";
 import SelectBox from "@/components/ui/listbox";
@@ -15,7 +16,13 @@ import CheckoutItem from "./checkout-item";
 import Delivery from "./checkout-delivery";
 import Required from "./checkout-required";
 
+
 const CheckoutForm = () => {
+
+    // init MercadoPago
+    initMercadoPago('TEST-128644b4-d8f5-4468-a070-6ac61fc3e562', {
+        locale: "es-UY",
+    });
 
     // Send to another address?
     const [differentAddress, setDifferentAddress] = useState(false);
@@ -184,12 +191,27 @@ const CheckoutForm = () => {
     const [selectedDep, setSelectedDep] = useState(departamentos[0]);
     const [selectedDeliveryDep, setSelectedDeliveryDep] = useState(departamentos[0]);
 
+    const [preferenceId, setPreferenceId] = useState(null);
+
+    // Preference creation
+    // const createPreference = async () => {
+    //     try {
+    //         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
+    //             title: "Bananita contenta",
+    //             quantity: 1,
+    //             price: 100,
+    //         });
+
+    //         const { id } = response.data;
+    //         return id;
+    //     } catch (error) {
+    //         console.log(error);
+    //     }
+    // }
 
     // On submit function
     const onSubmit = async (data: CheckoutFormValues) => {
         try {
-            // REMEMBER TO ADD selectedDep and selectedDeliveryDep to the Order POST if differentAddress was true.
-            // AND add pickupCedula and pickupFullname only if deliveryMethod === 0 (pickup).
             setIsLoading(true);
             const order = {
                 ...data,
@@ -218,7 +240,8 @@ const CheckoutForm = () => {
                 TandC: TC,
             }
 
-            // console.log("Orden: ", order);
+            // Place the order, returns preference id from MercadoPago.
+            // Once the user has paid, they will be redirected to the cart page with the corresponding searchParams.
             const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
                 productIds: items.map((item) => item.id),
                 orderData: order
@@ -227,7 +250,13 @@ const CheckoutForm = () => {
             // console.log(response.data.url);
             // window.location = response.data.url;
             // reset();
+
+            const id = response.data.id;
+            if (id) {
+                setPreferenceId(id);
+            }
             setIsLoading(false);
+
         } catch (error) {
             console.log(error);
             setIsLoading(false);
@@ -687,6 +716,7 @@ const CheckoutForm = () => {
                             <label className="text-md">He leído y estoy de acuerdo con los términos y condiciones de la web</label>
                         </div>
                     </div>
+
                     <Button
                         type="submit"
                         disabled={TC === false}
@@ -694,6 +724,9 @@ const CheckoutForm = () => {
                         className="w-full mt-6">
                         Proceder con el pago
                     </Button>
+
+                    {preferenceId && <Wallet initialization={{ preferenceId: preferenceId }} />}
+
                 </div>
 
             </form>
