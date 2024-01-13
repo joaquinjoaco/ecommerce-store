@@ -21,9 +21,6 @@ const Navbar = async () => {
                             height={100}
                             src={"/sportpolis-logo-texto-enhanced.png"}
                             alt="SportPolis logo" />
-                        {/* <p className="font-bold text-xl">
-                            SportPolis
-                        </p> */}
                     </Link>
                     <MainNav data={categories} />
                     <NavbarActions />

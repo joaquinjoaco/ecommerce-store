@@ -159,11 +159,11 @@ const CheckoutForm = () => {
     // Cart Items.
     const items = useCart((state) => state.items);
     // Subtotal price.
-    const subTotalPrice = items.reduce((total, item) => {
+    const subtotalPrice = items.reduce((total, item) => {
         return total + Number(item.price)
     }, 0); // initial value 0.
     // Total price.
-    const totalPrice = subTotalPrice + deliveryMethod.cost;
+    const totalPrice = subtotalPrice + deliveryMethod.cost;
 
 
     // Departamentos
@@ -237,6 +237,7 @@ const CheckoutForm = () => {
                 pickupFullName: deliveryMethod.id === 0 ? data.pickupFullName : "",
                 productIds: items.map((item) => item.id),
                 totalPrice: totalPrice,
+                subtotalPrice: subtotalPrice,
                 TandC: TC,
             }
 
@@ -644,7 +645,7 @@ const CheckoutForm = () => {
                                     Subtotal
                                 </div>
                                 <div className="font-bold">
-                                    <Currency value={subTotalPrice} />
+                                    <Currency value={subtotalPrice} />
                                 </div>
                             </div>
                         </div>

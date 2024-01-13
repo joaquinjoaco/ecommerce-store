@@ -21,6 +21,7 @@ const Summary = () => {
         if (orderId) {
             try {
                 const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout/${orderId}`);
+                toast.success("Pago verificado.")
             } catch (error: any) {
                 toast.error("Ocurrió un error inesperado en la validación posterior al pago.");
             }
