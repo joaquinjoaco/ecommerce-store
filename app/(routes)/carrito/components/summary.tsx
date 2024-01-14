@@ -20,8 +20,9 @@ const Summary = () => {
     const orderSucess = async (orderId: string | null) => {
         if (orderId) {
             try {
-                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout/${orderId}`);
-                toast.success("Pago verificado.")
+                const payment_id = searchParams.get("payment_id");
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout/${orderId}?payment_id=${payment_id}`);
+                toast.success("Pago verificado.");
             } catch (error: any) {
                 toast.error("Ocurrió un error inesperado en la validación posterior al pago.");
             }
@@ -30,7 +31,7 @@ const Summary = () => {
 
     useEffect(() => {
         if (searchParams.get("success")) {
-            toast.success("Pago completado.");
+            toast.success("Verificando pago...");
             orderSucess(searchParams.get("order_id"));
             removeAll();
         }
