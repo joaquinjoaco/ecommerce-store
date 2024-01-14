@@ -248,10 +248,6 @@ const CheckoutForm = () => {
                 orderData: order
             });
 
-            // console.log(response.data.url);
-            // window.location = response.data.url;
-            // reset();
-
             const id = response.data.id;
             if (id) {
                 setPreferenceId(id);
@@ -259,7 +255,6 @@ const CheckoutForm = () => {
             setIsLoading(false);
 
         } catch (error) {
-            console.log(error);
             setIsLoading(false);
         }
     }
@@ -726,11 +721,10 @@ const CheckoutForm = () => {
                         Proceder con el pago
                     </Button>
 
-                    {preferenceId && <Wallet initialization={{ preferenceId: preferenceId }} />}
-
                 </div>
-
             </form>
+
+            {preferenceId && <Wallet initialization={{ preferenceId: preferenceId }} />}
         </div>
 
     );
