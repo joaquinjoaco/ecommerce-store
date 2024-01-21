@@ -17,6 +17,7 @@ export interface Product {
     name: string;
     description: string;
     price: string;
+    quantity: number;
     isFeatured: boolean;
     size: Size;
     color: ColorGamut;

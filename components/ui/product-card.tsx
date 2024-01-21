@@ -44,6 +44,7 @@ const ProductCard: React.FC<ProductCard> = ({
                 <Image
                     src={data?.images?.[0].url}
                     fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     alt="Imagen del producto"
                     className="aspect-square object-cover rounded-md"
                 />
@@ -53,10 +54,13 @@ const ProductCard: React.FC<ProductCard> = ({
                             onClick={onPreview}
                             icon={<Expand size={20} className="text-gray-600" />}
                         />
-                        <IconButton
-                            onClick={onAddToCart}
-                            icon={<ShoppingCart size={20} className="text-gray-600" />}
-                        />
+                        {/* If there is no stock the addToCart button won't be displayed */}
+                        {data.quantity > 0 &&
+                            <IconButton
+                                onClick={onAddToCart}
+                                icon={<ShoppingCart size={20} className="text-gray-600" />}
+                            />
+                        }
                     </div>
                 </div>
             </div>

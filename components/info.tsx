@@ -5,10 +5,13 @@ import { Product } from "@/types";
 import Currency from "@/components/ui/currency";
 import Button from "@/components/ui/button";
 import useCart from "@/hooks/use-cart";
-import ProductDescription from "./product-description";
+import ProductDescription from "./ui/product-description";
+
+export const revalidate = 60;
+
 
 interface InfoProps {
-    data: Product
+    data: Product;
 }
 
 const Info: React.FC<InfoProps> = ({
@@ -24,10 +27,10 @@ const Info: React.FC<InfoProps> = ({
     return (
         <div>
             <h1 className="text-3xl font-bold text-gray-900">{data.name}</h1>
+            {data.quantity === 0 && <p className="text-red-400">No hay stock disponible</p>}
+            {data.quantity > 0 && <p>{data?.quantity} disponibles</p>}
             <div className="mt-3 flex items-end justify-between">
-                <p className="text-2xl text-gray-900">
-                    <Currency value={data?.price} />
-                </p>
+                <Currency className="text-2xl text-gray-900" value={data?.price} />
             </div>
             <hr className="my-4" />
             <div className="flex flex-col gap-y-6">
@@ -52,8 +55,9 @@ const Info: React.FC<InfoProps> = ({
                     <ProductDescription description={data?.description} />
                 </div>
             </div>
+
             <div className="mt-10 flex items-center gap-x-3">
-                <Button onClick={onAddToCart} className="flex items-center gap-x-2">
+                <Button disabled={data.quantity === 0} onClick={onAddToCart} className="flex items-center gap-x-2">
                     Añadir al carro
                     <ShoppingCart />
                 </Button>

@@ -193,22 +193,6 @@ const CheckoutForm = () => {
 
     const [preferenceId, setPreferenceId] = useState(null);
 
-    // Preference creation
-    // const createPreference = async () => {
-    //     try {
-    //         const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout`, {
-    //             title: "Bananita contenta",
-    //             quantity: 1,
-    //             price: 100,
-    //         });
-
-    //         const { id } = response.data;
-    //         return id;
-    //     } catch (error) {
-    //         console.log(error);
-    //     }
-    // }
-
     // On submit function
     const onSubmit = async (data: CheckoutFormValues) => {
         try {

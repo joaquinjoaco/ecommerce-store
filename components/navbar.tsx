@@ -17,9 +17,11 @@ const Navbar = async () => {
                 <div className="relative px-4 sm:px-6 lg:px-8 flex h-16  items-center">
                     <Link href="/" className="ml-4 flex lg:ml-0 gap-x-2.5 items-center">
                         <Image
-                            width={100}
-                            height={100}
+                            width={50}
+                            height={50}
+                            priority={true}
                             src={"/sportpolis-logo-texto-enhanced.png"}
+                            className="w-24"
                             alt="SportPolis logo" />
                     </Link>
                     <MainNav data={categories} />

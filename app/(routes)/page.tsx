@@ -1,6 +1,4 @@
-import getBillboard from "@/actions/get-billboard";
 import getProducts from "@/actions/get-products";
-import Billboard from "@/components/ui/billboard";
 import ProductList from "@/components/product-list";
 import Container from "@/components/ui/container";
 import BillboardSlider from "@/components/ui/billboard-slider";
@@ -13,7 +11,6 @@ const HomePage = async () => {
     const products = await getProducts({ isFeatured: true }); // We want only the featured products on the Homepage.
     {/* TODO: isOnSlider Boolean for billboards an only fetch those with the boolean like the featured products above */ }
     const billboards = await getBillboards();
-    // const billboard = await getBillboard("a5cd7d80-c071-4257-bc23-51c95b4cabc6");
 
     return (
         <Container>
