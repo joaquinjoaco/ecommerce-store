@@ -22,6 +22,8 @@ export interface Product {
     size: Size;
     color: ColorGamut;
     images: Image[];
+
+    selectedQuantity: number;
 };
 
 export interface Image {

@@ -116,9 +116,9 @@ const CheckoutForm = () => {
     const {
         register,
         handleSubmit,
-        watch,
-        reset,
-        trigger,
+        // watch,
+        // reset,
+        // trigger,
         formState: { errors }
     } = useForm<CheckoutFormValues>({
         resolver: zodResolver(formSchema),
@@ -158,10 +158,12 @@ const CheckoutForm = () => {
 
     // Cart Items.
     const items = useCart((state) => state.items);
+
     // Subtotal price.
     const subtotalPrice = items.reduce((total, item) => {
-        return total + Number(item.price)
+        return total + (Number(item.price) * item.selectedQuantity)
     }, 0); // initial value 0.
+
     // Total price.
     const totalPrice = subtotalPrice + deliveryMethod.cost;
 
@@ -219,9 +221,10 @@ const CheckoutForm = () => {
 
                 pickupCedula: deliveryMethod.id === 0 ? data.pickupCedula : "",
                 pickupFullName: deliveryMethod.id === 0 ? data.pickupFullName : "",
-                productIds: items.map((item) => item.id),
                 totalPrice: totalPrice,
                 subtotalPrice: subtotalPrice,
+
+                boughtProducts: items.map((item) => ({ id: item.id, selectedQuantity: item.selectedQuantity })),
                 TandC: TC,
             }
 
@@ -231,11 +234,12 @@ const CheckoutForm = () => {
                 productIds: items.map((item) => item.id),
                 orderData: order
             });
-
+            // Grab the preference id from the response.
             const id = response.data.id;
             if (id) {
                 setPreferenceId(id);
             }
+
             setIsLoading(false);
 
         } catch (error) {

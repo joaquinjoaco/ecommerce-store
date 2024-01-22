@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import toast from "react-hot-toast";
-import { X } from "lucide-react";
+import { Minus, Plus, X } from "lucide-react";
 
 import IconButton from "@/components/ui/icon-button";
 import Currency from "@/components/ui/currency";
 import useCart from "@/hooks/use-cart";
 import { Product } from "@/types";
+import Button from "@/components/ui/button";
+import { useState } from "react";
 
 interface CartItemProps {
     data: Product;
@@ -18,9 +20,27 @@ const CartItem: React.FC<CartItemProps> = ({
 }) => {
 
     const cart = useCart();
+    const [quantity, setQuantity] = useState(data.selectedQuantity);
+    data.selectedQuantity = quantity;
 
     const onRemove = () => {
         cart.removeItem(data.id);
+    }
+
+    const incrementQuantity = () => {
+        if (data.quantity > quantity) {
+            setQuantity(quantity + 1);
+            data.selectedQuantity = quantity;
+            cart.editItem(data, data.id);
+        }
+    }
+
+    const decrementQuantity = () => {
+        if (quantity > 1) {
+            setQuantity(quantity - 1);
+            data.selectedQuantity = quantity;
+            cart.editItem(data, data.id);
+        }
     }
 
     return (
@@ -55,6 +75,24 @@ const CartItem: React.FC<CartItemProps> = ({
                         <p className="text-gray-500 ml-4 border-l border-gray-200 pl-4 ">{data.size.name}</p>
                     </div>
                     <Currency value={data.price} />
+                </div>
+                {/* Quantity selector */}
+                <div className="flex">
+                    <Button onClick={() => decrementQuantity()} className="flex items-center rounded-full bg-black px-4 py-2">
+                        <Minus
+                            size={20}
+                            color="white"
+                        />
+                    </Button>
+                    <div className="flex justify-center w-full">
+                        <p className="text-xl">Cantidad: {quantity}</p>
+                    </div>
+                    <Button onClick={() => incrementQuantity()} className="flex items-center rounded-full bg-black px-4 py-2">
+                        <Plus
+                            size={20}
+                            color="white"
+                        />
+                    </Button>
                 </div>
             </div>
         </li>

@@ -11,13 +11,12 @@ const CheckoutItem: React.FC<CheckoutItemProps> = ({
     data
 }) => {
 
-
     return (
         <li className="flex justify-between">
             {/* Product */}
             <div className="flex flex-col justify-between">
                 <p className="text-md font-semibold text-black">
-                    {data.name}
+                    {data.selectedQuantity} x {data.name}
                 </p>
                 <p className="text-gray-500">
                     {
@@ -31,7 +30,7 @@ const CheckoutItem: React.FC<CheckoutItemProps> = ({
 
             {/* Price */}
             <div className="flex mt-1 text-sm">
-                <Currency className="text-gray-500 font-bold" value={data.price} />
+                <Currency className="text-gray-500 font-bold" value={Number(data.price) * data.selectedQuantity} />
             </div>
         </li >
     );

@@ -17,23 +17,23 @@ const Summary = () => {
     const removeAll = useCart((state) => state.removeAll);
 
     // Called by useEffect after successful payment
-    const orderSucess = async (orderId: string | null) => {
+    const orderSucess = async (orderId: string | null, toastId: string) => {
         if (orderId) {
             try {
                 const payment_id = searchParams.get("payment_id");
                 const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/checkout/${orderId}?payment_id=${payment_id}`);
-                toast.success("Pago verificado.");
+                toast.success("Pago verificado.", { id: toastId });
             } catch (error: any) {
-                toast.error("Ocurrió un error inesperado en la validación posterior al pago.");
+                toast.error("Ocurrió un error inesperado en la validación posterior al pago.", { id: toastId });
             }
         }
     }
 
     useEffect(() => {
         if (searchParams.get("success")) {
-            toast.success("Verificando pago...");
-            orderSucess(searchParams.get("order_id"));
             removeAll();
+            const toastId = toast.loading("Verificando pago...");
+            orderSucess(searchParams.get("order_id"), toastId);
         }
 
         if (searchParams.get("failure")) {
@@ -41,13 +41,13 @@ const Summary = () => {
         }
 
         if (searchParams.get("pending")) {
-            toast.error("El pago se encuentra pendiente.");
+            toast.error("El pago se encuentra pendiente. Comunícate con nosotros.");
         }
 
     }, [searchParams, removeAll]);
 
     const totalPrice = items.reduce((total, item) => {
-        return total + Number(item.price)
+        return total + (Number(item.price) * item.selectedQuantity)
     }, 0); // default value 0.
 
     return (

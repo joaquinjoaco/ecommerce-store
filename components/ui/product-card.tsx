@@ -34,6 +34,7 @@ const ProductCard: React.FC<ProductCard> = ({
 
     const onAddToCart: MouseEventHandler<HTMLButtonElement> = (event) => {
         event.stopPropagation(); // overrides the main div's onClick
+        data.selectedQuantity = 1;
         cart.addItem(data);
     }
 
