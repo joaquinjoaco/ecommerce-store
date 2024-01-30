@@ -24,9 +24,6 @@ const BillboardSlider: React.FC<BillboardSliderProps> = ({
     useEffect(() => {
         if (isMounted) {
             const slideInterval = setInterval(() => {
-                // const isLastSlide = currentIndex === slides.length - 1;
-                // const newIndex = isLastSlide ? 0 : currentIndex + 1;
-                // setCurrentIndex(newIndex);
                 nextSlide();
             }, 6000);
 
