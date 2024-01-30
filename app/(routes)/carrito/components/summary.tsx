@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-hot-toast";
 import axios from "axios";
@@ -12,6 +12,7 @@ import useCart from "@/hooks/use-cart";
 const Summary = () => {
 
     const router = useRouter();
+    const [isLoading, setIsLoading] = useState(false);
     const searchParams = useSearchParams();
     const items = useCart((state) => state.items);
     const removeAll = useCart((state) => state.removeAll);
@@ -65,8 +66,14 @@ const Summary = () => {
                     </div>
                 </div>
             </div>
-            <Button disabled={items.length === 0} onClick={() => router.push("/checkout")} className="w-full mt-6">
-                Finalizar compra
+            <Button
+                disabled={items.length === 0 || isLoading}
+                onClick={() => {
+                    setIsLoading(true);
+                    router.push("/checkout");
+                }}
+                className="w-full mt-6">
+                {isLoading ? "Cargando..." : "Finalizar compra"}
             </Button>
         </div>
     )
